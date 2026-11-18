@@ -7,7 +7,7 @@ import org.testng.xml.XmlPackage;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 import org.xml.sax.SAXException;
-import org.yaml.snakeyaml.Loader;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -31,7 +31,7 @@ public class Yaml {
 
   public static XmlSuite parse(String filePath, InputStream is)
       throws FileNotFoundException {
-    Constructor constructor = new Constructor(XmlSuite.class);
+    Constructor constructor = new Constructor(XmlSuite.class, new LoaderOptions());
     {
       TypeDescription suiteDescription = new TypeDescription(XmlSuite.class);
       suiteDescription.putListPropertyType("packages", XmlPackage.class);
@@ -49,9 +49,7 @@ public class Yaml {
       constructor.addTypeDescription(testDescription);
     }
 
-    Loader loader = new Loader(constructor);
-
-    org.yaml.snakeyaml.Yaml y = new org.yaml.snakeyaml.Yaml(loader);
+    org.yaml.snakeyaml.Yaml y = new org.yaml.snakeyaml.Yaml(constructor);
     if (is == null) is = new FileInputStream(new File(filePath));
     XmlSuite result = (XmlSuite) y.load(is);
 
